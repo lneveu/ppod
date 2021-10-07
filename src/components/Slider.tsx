@@ -1,22 +1,22 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { fetchImages, ImageData } from '../services/imagesService';
+import { fetchImages, ImageData, SolPayload } from '../services/imagesService';
 import { getMissionSol } from '../utils/marsDate';
 
 interface SlideProps {
-  data: ImageData | null;
+  data: SolPayload | null;
   width: number;
   toggleFullscreen?: Function;
 }
 
 interface SliderState {
   index: number;
-  slides: (ImageData | null)[];
+  slides: (SolPayload | null)[];
   translateX: number;
   transition: boolean;
 }
 
 interface SliderStoreState {
-  images: ImageData[];
+  images: SolPayload[];
   sol: number;
 }
 
@@ -25,13 +25,23 @@ function Slide({ data, width, toggleFullscreen }: SlideProps) {
     <div className="slider__slide" style={{ width }}>
       <div className="slider__slide-content">
         <div className="picture-wrapper">
-          {data && (
-            <img className="picture" src={data.src} onClick={() => toggleFullscreen && toggleFullscreen()}></img>
+          {data && data.imageData && (
+            <img
+              className="picture"
+              src={data.imageData.src}
+              onClick={() => toggleFullscreen && toggleFullscreen()}
+            ></img>
+          )}
+          {data && !data.imageData && (
+            <div className="nopicture">
+              <div>No image available</div>
+              <span>SOL {data.sol}</span>
+            </div>
           )}
         </div>
-        {data && (
-          <a href={data.link} className="caption" target="_blank" rel="noreferrer noopener">
-            {data.caption}
+        {data && data.imageData && (
+          <a href={data.imageData.link} className="caption" target="_blank" rel="noreferrer noopener">
+            {data.imageData.caption}
           </a>
         )}
       </div>

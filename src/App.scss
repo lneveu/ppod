@@ -302,5 +302,16 @@ a {
         text-decoration: underline;
       }
     }
+
+    .nopicture {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3em;
+      text-align: center;
+      opacity: 0.2;
+
+      span {
+        font-size: 0.9em;
+      }
+    }
   }
 }

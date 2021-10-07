@@ -10,6 +10,11 @@ interface NasaRawData {
   title: string;
 }
 
+export interface SolPayload {
+  sol: number;
+  imageData?: ImageData
+}
+
 export interface ImageData {
   id: string;
   src: string;
@@ -55,17 +60,22 @@ async function fetchImageForSol(sol: number): Promise<ImageData | null> {
   }
 }
 
-async function fetchImages(sol: number, count: number = 5): Promise<ImageData[]> {
+async function fetchImages(sol: number, count: number = 5): Promise<SolPayload[]> {
   const sols = Array(count).fill(null).map((_, i) => sol - i).filter(i => i >= 0);
   const rawImages = await Promise.all(
     sols.map(s => fetchImageForSol(s))
   );
 
-  return (rawImages.filter(img => img !== null) as ImageData[])
-    .map(img => {
+  const solPayload = rawImages.map((img, i) => {
+    const payload: SolPayload = { sol: sols[i] }
+    if (img) {
       preloadImage(img.src);
-      return img;
-    });
+      payload.imageData = img
+    }
+    return payload
+  })
+
+  return solPayload
 }
 
 export { fetchImages };
